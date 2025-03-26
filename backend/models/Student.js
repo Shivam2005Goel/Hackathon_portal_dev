@@ -1,7 +1,6 @@
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
+const mongoose = require("mongoose");
 
-const UserSchema = new Schema({
+const studentSchema = new mongoose.Schema({
   studentID: { type: String, unique: true, required: true },
   name: { type: String, required: true },
   email: { type: String, unique: true, required: true },
@@ -14,8 +13,7 @@ const UserSchema = new Schema({
   department: { type: String, required: true },
   cgpa: { type: Number },
   enrollmentYear: { type: Number },
-  marks:{type : array}
-
+  marks: [{ subject: String, score: Number }]  // Corrected the marks array structure
 });
 
-module.exports = mongoose.model('user',UserSchema)
+module.exports = mongoose.model("Student", studentSchema);

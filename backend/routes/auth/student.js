@@ -1,102 +1,104 @@
 const express = require('express');
 const router = express.Router();
-const studentUser = require('../models/Faculty.js');
-const {body, validationResult} = require('express-validator');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
-var FetchUser = require("../middleware/FetchFaculty.js");
+const Student = require('../../models/Student.js');
+const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const FetchUser = require("../../middleware/FetchStudent.js");
 
 const JWT_SECRET = "studentSecret";
 
-
-router.post('/createUser',[
+// Student Registration
+router.post('/createUser', [
+    body('studentID').notEmpty(),
     body('name').notEmpty(),
-    body("email").isEmail(),
-], async (req,res)=>{
-   const result = validationResult(req);
-  if (!result.isEmpty()) {
-    return res.status(400).json({ errors: result.array() });
-  }
-
-  var salt = await bcrypt.genSalt(10);     // CREATE AND HASH PASSWORD
-  var secPass = await bcrypt.hash(req.body.password,salt);
-
-
-  const user = await studentUser.create({   // CREATE THE NEW USER IN TABLE
-    studentID: req.body.studentID,
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password,
-    phoneNumber: req.body.phoneNumber,
-    dateOfBirth: req.body.dateOfBirth,
-    gender: req.body.gender,
-    course: req.body.course,
-    yearOfStudy: req.body.yearOfStudy,
-    department: req.body.department,
-    cgpa: req.body.cgpa,
-    enrollmentYear: req.body.enrollmentYear,
-    marks: req.body.marks                    
-  })
-   
-  // res.json(req.body);
-
-  const data = {       // CREATE A AUTH TOKEN FOR THE NEW USER
-    user : {
-      id : user.studentID
+    body("password").isLength({ min: 6 })
+], async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
     }
-  }
-  var authToken = jwt.sign(data,JWT_SECRET);
-  res.json({authToken});
-  
-})
 
+    try {
+        const { studentID, name, email, password, phoneNumber, dateOfBirth, gender, course, yearOfStudy, department, cgpa, enrollmentYear, marks } = req.body;
 
-router.post("/login",[
-  body("email").isEmail(),
-  body("password").exists()
-],async (req,res)=>{
-   var result = validationResult(req);
-   if(!result.isEmpty()){
-    res.status(400).json({error : "Plz enter the correct credentials"});
-   }
+        let studentExists = await Student.findOne({ studentID });
+        if (studentExists) {
+            return res.status(400).json({ error: "Student ID already exists" });
+        }
 
-   try {
-    const {studentID,password} = req.body;
-    var user = await studentUser.findOne({studentID});
-    if(!user){
-      res.status(400).json({error : "User does not exists"});
+        // Hash Password
+        const salt = await bcrypt.genSalt(10);
+        const secPass = await bcrypt.hash(password, salt);
+
+        // Create Student
+        const student = await Student.create({
+            studentID, name, email, password: secPass, phoneNumber,
+            dateOfBirth, gender, course, yearOfStudy, department, cgpa,
+            enrollmentYear, marks
+        });
+
+        // Generate JWT Token
+        const data = { user: { id: student.studentID } };
+        const authToken = jwt.sign(data, JWT_SECRET);
+
+        res.json({ authToken });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Some Server Error occurred" });
     }
- 
-    var checkPass = await bcrypt.compare(password,user.password);
-    if(!checkPass){
-     res.status(400).json({error : "User does not exists"});
+});
+
+// Student Login (Using studentID)
+router.post("/login", [
+    body("studentID").notEmpty(),
+    body("password").exists()
+], async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ error: "Please enter valid credentials" });
     }
-    
-    const data = {
-     user : {
-       id : user.studentID
-     }
-   }
-   var authToken = jwt.sign(data,JWT_SECRET);
-   res.json({authToken});
-   } catch (error) {
-      console.log(error.message);
-      res.send(500).json("Some Server Error occured");
-   }
-   
 
-})
+    try {
+        const { studentID, password } = req.body;
 
-router.post('/getUser',FetchUser,async (req,res)=>{
-  try {
-     const userId = req.user.id;
-     const user = await studentUser.findById(userId).select("-password");
-     res.send(user)
-  } catch (error) {
-    console.log(error.message);
-    res.send(500).json("Some Server Error occured");
-  }
-})
+        // Find Student by studentID
+        const student = await Student.findOne({ studentID });
+        if (!student) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
+
+        // Compare Password
+        const checkPass = await bcrypt.compare(password, student.password);
+        if (!checkPass) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
+
+        // Generate JWT Token
+        const data = { user: { id: student.studentID } };
+        const authToken = jwt.sign(data, JWT_SECRET);
+
+        res.json({ authToken });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Fetch Student Details
+router.get('/getUser', FetchUser, async (req, res) => {
+    try {
+        const student = await Student.findOne({ studentID: req.user.id }).select("-password");
+        if (!student) {
+            return res.status(404).json({ error: "Student not found" });
+        }
+        res.json(student);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Some Server Error occurred" });
+    }
+});
 
 module.exports = router;
-

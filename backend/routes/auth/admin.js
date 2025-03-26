@@ -1,94 +1,102 @@
 const express = require('express');
 const router = express.Router();
-const adminUser = require('../models/Admin.js');
-const {body, validationResult} = require('express-validator');
-var bcrypt = require('bcryptjs');
-var jwt = require('jsonwebtoken');
-var FetchUser = require("../middleware/FetchAdmin.js");
+const Admin = require('../../models/Admin.js');
+const { body, validationResult } = require('express-validator');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const FetchUser = require("../../middleware/FetchAdmin.js");
 
 const JWT_SECRET = "adminSecret";
 
-
-router.post('/createUser',[
+// Admin Registration
+router.post('/createUser', [
+    body('adminID').notEmpty(),
     body('name').notEmpty(),
-    body("email").isEmail(),
-], async (req,res)=>{
-   const result = validationResult(req);
-  if (!result.isEmpty()) {
-    return res.status(400).json({ errors: result.array() });
-  }
-
-  var salt = await bcrypt.genSalt(10);     // CREATE AND HASH PASSWORD
-  var secPass = await bcrypt.hash(req.body.password,salt);
-
-
-  const user = await adminUser.create({   // CREATE THE NEW USER IN TABLE
-    adminID: req.body.adminID,   // Unique identifier for the admin
-    name: req.body.name,                   // Last name
-    email: req.body.email,     // Email address
-    password: secPass,              // Hashed password for authentication
-    phoneNumber: req.body.phoneNumber   
-  })
-   
-  // res.json(req.body);
-
-  const data = {       // CREATE A AUTH TOKEN FOR THE NEW USER
-    user : {
-      id : user.adminID
+    body("password").isLength({ min: 6 })
+], async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ errors: result.array() });
     }
-  }
-  var authToken = jwt.sign(data,JWT_SECRET);
-  res.json({authToken});
-  
-})
 
+    try {
+        const { adminID, name, email, password, phoneNumber } = req.body;
 
-router.post("/login",[
-  body("email").isEmail(),
-  body("password").exists()
-],async (req,res)=>{
-   var result = validationResult(req);
-   if(!result.isEmpty()){
-    res.status(400).json({error : "Plz enter the correct credentials"});
-   }
+        let adminExists = await Admin.findOne({ adminID });
+        if (adminExists) {
+            return res.status(400).json({ error: "Admin ID already exists" });
+        }
 
-   try {
-    const {adminID,password} = req.body;
-    var user = await adminUser.findOne({adminID});
-    if(!user){
-      res.status(400).json({error : "User does not exists"});
+        // Hash Password
+        const salt = await bcrypt.genSalt(10);
+        const secPass = await bcrypt.hash(password, salt);
+
+        // Create Admin
+        const admin = await Admin.create({
+            adminID, name, email, password: secPass, phoneNumber
+        });
+
+        // Generate JWT Token
+        const data = { user: { id: admin.adminID } };
+        const authToken = jwt.sign(data, JWT_SECRET);
+
+        res.json({ authToken });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Some Server Error occurred" });
     }
- 
-    var checkPass = await bcrypt.compare(password,user.password);
-    if(!checkPass){
-     res.status(400).json({error : "User does not exists"});
+});
+
+// Admin Login (Using adminID)
+router.post("/login", [
+    body("adminID").notEmpty(),
+    body("password").exists()
+], async (req, res) => {
+    const result = validationResult(req);
+    if (!result.isEmpty()) {
+        return res.status(400).json({ error: "Please enter valid credentials" });
     }
-    
-    const data = {
-     user : {
-       id : user.adminID
-     }
-   }
-   var authToken = jwt.sign(data,JWT_SECRET);
-   res.json({authToken});
-   } catch (error) {
-      console.log(error.message);
-      res.send(500).json("Some Server Error occured");
-   }
-   
 
-})
+    try {
+        const { adminID, password } = req.body;
 
-router.post('/getUser',FetchUser,async (req,res)=>{
-  try {
-     const userId = req.user.id;
-     const user = await adminUser.findById(userId).select("-password");
-     res.send(user)
-  } catch (error) {
-    console.log(error.message);
-    res.send(500).json("Some Server Error occured");
-  }
-})
+        // Find Admin by adminID
+        const admin = await Admin.findOne({ adminID });
+        if (!admin) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
+
+        // Compare Password
+        const checkPass = await bcrypt.compare(password, admin.password);
+        if (!checkPass) {
+            return res.status(400).json({ error: "Invalid credentials" });
+        }
+
+        // Generate JWT Token
+        const data = { user: { id: admin.adminID } };
+        const authToken = jwt.sign(data, JWT_SECRET);
+
+        res.json({ authToken });
+
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Internal Server Error" });
+    }
+});
+
+// Fetch Admin Details
+router.get('/getUser', FetchUser, async (req, res) => {
+    try {
+        const admin = await Admin.findOne({ adminID: req.user.id }).select("-password");
+        if (!admin) {
+            return res.status(404).json({ error: "Admin not found" });
+        }
+        res.json(admin);
+    } catch (error) {
+        console.error(error.message);
+        res.status(500).json({ error: "Some Server Error occurred" });
+    }
+});
 
 module.exports = router;
-
