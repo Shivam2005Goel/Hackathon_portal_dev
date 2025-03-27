@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Timetable</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link rel="stylesheet" href="../public/style.css">
+    <style>
+        /* Dropdown styling for Evaluation hover */
+        .navbar .eval-dropdown {
+            position: relative;
+        }
+        .navbar .eval-dropdown .dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: var(--color-white);
+            box-shadow: var(--box-shadow);
+            border-radius: var(--border-radius-1);
+            z-index: 1;
+            min-width: 150px;
+        }
+        .navbar .eval-dropdown:hover .dropdown-content {
+            display: block;
+            top: calc(100% + 1.5rem); /* Adjusts for padding-top increase on hover */
+        }
+        .navbar .eval-dropdown .dropdown-content a {
+            display: block;
+            padding: 0.8rem 1rem;
+            color: var(--color-dark);
+            text-decoration: none;
+            transition: background 300ms ease;
+        }
+        .navbar .eval-dropdown .dropdown-content a:hover {
+            background: var(--color-light);
+            color: var(--color-primary);
+        }
+        /* Ensure hover effect consistency with other navbar items */
+        header .navbar .eval-dropdown a:hover {
+            padding-top: 1.5rem; /* Matches the hover effect of other navbar items */
+        }
+        /* Ensure timetable is centered and styled consistently */
+        .timetable {
+            margin: 80px auto;
+            padding: 2rem;
+            background: var(--color-white);
+            border-radius: var(--border-radius-1);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 1000px;
+        }
+        .timetable > div {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+        .timetable span {
+            cursor: pointer;
+            font-size: 1.5rem;
+            color: var(--color-primary);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-light);
+        }
+        th {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+        td a {
+            color: var(--color-primary);
+            text-decoration: none;
+        }
+        td a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="./images/logo.png" alt="">
+            <h2>U<span class="danger">M</span>S</h2>
+        </div>
+        <div class="navbar">
+            <a href="./facdash.ejs">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            <a href="./facultytimetable.ejs" class="active" onclick="timeTableAll()">
+                <span class="material-icons-sharp">today</span>
+                <h3>Timetable</h3>
+            </a>
+            <a href="./attendance.ejs">
+                <span class="material-icons-sharp">event_available</span>
+                <h3>Attendance</h3>
+            </a>
+            <a href="#" onclick="chooseCourse()">
+                <span class="material-icons-sharp">school</span>
+                <h3>Choose Course</h3>
+            </a>
+            <div class="eval-dropdown">
+                <a href="evaluation.html">
+                    <span class="material-icons-sharp">grid_view</span>
+                    <h3>Evaluation</h3>
+                </a>
+                <div class="dropdown-content">
+                    <a href="./exam-schedule.ejs">Exam Schedule</a>
+                    <a href="./grade-entry.ejs">Grade Entry</a>
+                </div>
+            </div>
+            <a href="#">
+                <span class="material-icons-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn" style="display: none;">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+    </header>
+
+    <main style="margin: 0;">
+        <div class="timetable active" id="timetable">
+            <div>
+                <span id="prevDay"><</span>
+                <h2 id="timetable-day">Today's Timetable</h2>
+                <span id="nextDay">></span>
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Room No.</th>
+                        <th>Course</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="timetable-body">
+                    <!-- Timetable rows will be populated dynamically -->
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="../public/appfac.js"></script>
+    
+</body>
+</html>

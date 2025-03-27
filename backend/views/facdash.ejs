@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty Dashboard</title>
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="stylesheet" href="../public/style.css">
+</head>
+<body>
+    <header>
+        <div class="logo" title="University Management System">
+            <img src="./images/logo.png" alt="">
+            <h2>U<span class="danger">M</span>S</h2>
+        </div>
+        <div class="navbar">
+            <a href="./facdash.ejs" class="active">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            <a href="./facultytimetable.ejs">
+                <span class="material-icons-sharp">today</span>
+                <h3>Timetable</h3>
+            </a>
+            <a href="./attendance.ejs">
+                <span class="material-icons-sharp">event_available</span>
+                <h3>Attendance</h3>
+            </a>
+            <a href="./choose-course.ejs">
+                <span class="material-icons-sharp">school</span>
+                <h3>Choose Course</h3>
+            </a>
+            <div class="eval-dropdown">
+                <a href="#">
+                    <span class="material-icons-sharp">grid_view</span>
+                    <h3>Evaluation</h3>
+                </a>
+                <div class="dropdown-content">
+                    <a href="exam-schedule.html">Exam Schedule</a>
+                    <a href="grade-entry.html">Grade Entry</a>
+                </div>
+            </div>
+            <a href="#">
+                <span class="material-icons-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+    </header>
+
+    <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="top">
+                    <div class="info">
+                        <p>Hey, <b>Dr. Priya Sharma</b></p>
+                        <small class="text-muted">FAC12345</small>
+                    </div>
+                </div>
+                <div class="about">
+                    <h5>Department</h5>
+                    <p>Computer Science</p>
+                    <h5>Contact</h5>
+                    <p>9876543210</p>
+                    <h5>Email</h5>
+                    <p>priya.sharma@university.edu</p>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <h1>Faculty Attendance <a href="./announcements.html" class="announce-btn">Announce to Students</a></h1>
+            <div class="subjects">
+                <div class="eg">
+                    <span class="material-icons-sharp">architecture</span>
+                    <h3>Operating Systems</h3>
+                    <h2>12/14</h2>
+                    <div class="progress" style="--percent: 86;">
+                        <svg>
+                            <circle cx="40" cy="40" r="36"></circle>
+                            <circle cx="40" cy="40" r="36"></circle>
+                        </svg>
+                        <div class="number"><p>86%</p></div>
+                    </div>
+                    <small class="text-muted">This Semester</small>
+                </div>
+                <div class="mth">
+                    <span class="material-icons-sharp">functions</span>
+                    <h3>Database Management</h3>
+                    <h2>27/29</h2>
+                    <div class="progress" style="--percent: 93;">
+                        <svg>
+                            <circle cx="40" cy="40" r="36"></circle>
+                            <circle cx="40" cy="40" r="36"></circle>
+                        </svg>
+                        <div class="number"><p>93%</p></div>
+                    </div>
+                    <small class="text-muted">This Semester</small>
+                </div>
+                <div class="cs">
+                    <span class="material-icons-sharp">computer</span>
+                    <h3>Computer Networks</h3>
+                    <h2>25/30</h2>
+                    <div class="progress" style="--percent: 83;">
+                        <svg>
+                            <circle cx="40" cy="40" r="36"></circle>
+                            <circle cx="40" cy="40" r="36"></circle>
+                        </svg>
+                        <div class="number"><p>83%</p></div>
+                    </div>
+                    <small class="text-muted">This Semester</small>
+                </div>
+            </div>
+
+            <div class="chosen-course">
+                <h1>Assigned Courses</h1>
+                <div id="selected-course">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="timetable" id="timetable" style="display: none;">
+                <div>
+                    <span id="prevDay"><</span>
+                    <h2 id="timetable-day">Today's Schedule</h2>
+                    <span id="nextDay">></span>
+                </div>
+                <span class="closeBtn">X</span>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Room No.</th>
+                            <th>Course</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="timetable-body">
+                        <!-- Populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <div class="right">
+            <div class="announcements">
+                <h2>Announcements</h2>
+                <div class="updates" id="announcement-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <div class="resources">
+                <h2>Resource Management</h2>
+                <div class="resource-item">
+                    <p><b>Projector</b> - Room A-101</p>
+                    <small class="text-muted">Available</small>
+                </div>
+                <div class="resource-item">
+                    <p><b>Lab Equipment</b> - Lab 1</p>
+                    <small class="text-muted">Booked</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../public/appfac.js"></script>
+</body>
+</html>

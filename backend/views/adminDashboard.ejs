@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gradient-to-r from-gray-100 to-gray-200 font-sans">
+
+    <!-- Navbar -->
+    <nav class="bg-[#880000] py-4 px-6 shadow-lg flex justify-between items-center">
+        <h1 class="text-2xl font-bold text-maroon-600"  >Admin Dashboard</h1>
+        <button onclick="logout()" class="bg-white text-[#880000] px-5 py-2 rounded-full font-semibold shadow-md hover:bg-gray-200 transition">
+            Logout
+        </button>
+    </nav>
+
+    <!-- Main Container -->
+    <div class="container mx-auto py-12 px-6">
+        <h2 class="text-3xl font-semibold text-[#880000] text-center mb-8">Welcome, Admin</h2>
+
+        <!-- Grid Layout for Management Sections -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+            <!-- Student Management -->
+            <a href="#" onclick="loadPage('admin2.ejs')" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl border-l-8 border-[#880000] transition transform hover:-translate-y-2">
+                <h3 class="text-xl font-semibold text-[#880000]">📚 Student Management</h3>
+                <p class="text-gray-700 mt-2">Manage student records efficiently.</p>
+            </a>
+
+            <!-- Faculty Management -->
+            <a href="#" onclick="loadPage('admin1.ejs')" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl border-l-8 border-[#880000] transition transform hover:-translate-y-2">
+                <h3 class="text-xl font-semibold text-[#880000]">👨‍🏫 Faculty Management</h3>
+                <p class="text-gray-700 mt-2">Maintain faculty details and schedules.</p>
+            </a>
+
+            <!-- Announcements -->
+            <a href="#" onclick="loadPage('admin3.ejs')" class="bg-white p-8 rounded-lg shadow-lg hover:shadow-2xl border-l-8 border-[#880000] transition transform hover:-translate-y-2">
+                <h3 class="text-xl font-semibold text-[#880000]">📢 Announcements</h3>
+                <p class="text-gray-700 mt-2">Post and view latest updates.</p>
+            </a>
+        </div>
+
+        <!-- Content Display Area (Using iframe) -->
+        <div class="flex justify-center mt-6">
+            <iframe id="contentFrame" src="" width="100%" height="600px" class="border rounded-lg shadow-lg bg-white p-4"></iframe>
+        </div>
+    </div>
+
+    <script>
+        function loadPage(page) {
+            document.getElementById("contentFrame").src = page;
+        }
+
+        function logout() {
+            alert("Logging out...");
+            window.location.href = "front_page.html"; // Redirect to login page
+        }
+    </script>
+
+</body>
+</html>

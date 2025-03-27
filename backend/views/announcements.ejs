@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .announcements {
+            margin: 80px auto;
+            padding: 2rem;
+            background: var(--color-white);
+            border-radius: var(--border-radius-1);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 1000px;
+        }
+        .announcements h2 {
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+        .new-announcement {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .new-announcement textarea {
+            width: 100%;
+            max-width: 500px;
+            padding: 0.5rem;
+            font-size: 1rem;
+            border-radius: 5px;
+            border: 1px solid var(--color-light);
+            margin-bottom: 0.5rem;
+        }
+        .new-announcement button {
+            padding: 0.5rem 1rem;
+            background: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .new-announcement button:hover {
+            background: #e04343;
+        }
+        .announcement-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .announcement-item {
+            padding: 1rem;
+            border-bottom: 1px solid var(--color-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .announcement-item p {
+            margin: 0;
+        }
+        .announcement-item small {
+            color: #888;
+        }
+        .announcement-item .delete-btn {
+            background: none;
+            border: none;
+            color: var(--color-danger);
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="./images/logo.png" alt="">
+            <h2>U<span class="danger">M</span>S</h2>
+        </div>
+        <div class="navbar">
+            <a href="facdash.html">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            <a href="timetable.html">
+                <span class="material-icons-sharp">today</span>
+                <h3>Timetable</h3>
+            </a>
+            <a href="attendance.html">
+                <span class="material-icons-sharp">event_available</span>
+                <h3>Attendance</h3>
+            </a>
+            <a href="choose-course.html">
+                <span class="material-icons-sharp">school</span>
+                <h3>Choose Course</h3>
+            </a>
+            <div class="eval-dropdown">
+                <a href="#">
+                    <span class="material-icons-sharp">grid_view</span>
+                    <h3>Evaluation</h3>
+                </a>
+                <div class="dropdown-content">
+                    <a href="exam-schedule.html">Exam Schedule</a>
+                    <a href="grade-entry.html">Grade Entry</a>
+                </div>
+            </div>
+            <a href="announcements.html" class="active">
+                <span class="material-icons-sharp">campaign</span>
+                <h3>Announcements</h3>
+            </a>
+            <a href="#">
+                <span class="material-icons-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn" style="display: none;">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+    </header>
+
+    <main style="margin: 0;">
+        <div class="announcements">
+            <h2>Announcements</h2>
+            <div class="new-announcement">
+                <textarea id="new-announcement-text" placeholder="Enter your announcement here..."></textarea>
+                <button id="send-announcement">Send Announcement</button>
+            </div>
+            <div class="announcement-list" id="announcement-list">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <script src="appfac.js"></script>
+</body>
+</html>

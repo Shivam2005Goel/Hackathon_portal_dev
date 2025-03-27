@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Business School</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+        body {
+            line-height: 1.6;
+            color: #333;
+            scroll-behavior: smooth;
+        }
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background-color: rgba(255,255,255,0.9);
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        nav {
+            display: flex;
+            align-items: center;
+        }
+        nav a {
+            margin-left: 45px;
+            text-decoration: none;
+            color: #333;
+            transition: color 0.3s ease;
+        }
+        nav a:hover {
+            color: #8B0000;
+        }
+        .hero {
+            position: relative;
+            height: 100vh;
+            display: flex;
+            background-image: url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+            overflow: hidden;
+        }
+        .hero-content {
+            max-width: 1000px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+        .hero h1 {
+            font-size: 3.6rem;
+            margin-bottom: 20px;
+            color: #fff;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            font-family: Georgia, serif;
+        }
+        .hero blockquote {
+            font-style: italic;
+            color: #1b0101;
+            margin-bottom: 30px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.5);
+            font-family: Georgia, serif;
+        }
+        .program-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .program-buttons a {
+            text-decoration: none;
+            color: white;
+            background-color: #8B0000;
+            padding: 10px 20px;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+        }
+        .program-buttons a:hover {
+            background-color: #660000;
+        }
+        .sections {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+            padding: 50px 0;
+        }
+        .section {
+            text-align: center;
+            max-width: 1200px;
+            width: 100%;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        .section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .section h2 {
+            margin-bottom: 15px;
+            color: #333;
+            font-size: 2.5rem;
+        }
+        .section-description {
+            margin-bottom: 20px;
+            color: #666;
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .section-details {
+            margin-top: 15px;
+            color: #444;
+            font-size: 1.1rem;
+        }
+        .image-carousel {
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+            height: 500px;
+        }
+        .faculty .image-carousel, .alumni .image-carousel {
+            height: 350px;
+        }
+        .carousel-track {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+            height: 100%;
+        }
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        .carousel-slide img:hover {
+            transform: scale(1.05);
+        }
+        .carousel-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .faculty .carousel-track, .alumni .carousel-track {
+            gap: 20px;
+            padding: 0 10px;
+        }
+        .faculty .carousel-slide, .alumni .carousel-slide {
+            min-width: 25%;
+            flex-direction: column;
+            justify-content: center;
+            padding: 10px;
+        }
+        .faculty .carousel-slide img, .alumni .carousel-slide img {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 15px;
+            transition: transform 0.3s ease;
+        }
+        .faculty .carousel-overlay, .alumni .carousel-overlay {
+            position: static;
+            background: none;
+            color: #333;
+            padding: 0;
+        }
+        .carousel-controls {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 10;
+            padding: 0 20px;
+        }
+        .carousel-control {
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+        .carousel-control:hover {
+            background: rgba(0,0,0,0.7);
+        }
+        .big-footer {
+            background-color: #1a1a2e;
+            color: #fff;
+            padding: 60px 0 20px;
+        }
+        .footer-content {
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 30px;
+            max-width: 1200px;
+            padding: 0 20px;
+        }
+        .footer-section {
+            flex: 1;
+            min-width: 200px;
+        }
+        .footer-section h3 {
+            margin-bottom: 15px;
+            color: #fff;
+            border-bottom: 2px solid #8B0000;
+            padding-bottom: 10px;
+        }
+        .footer-section ul {
+            list-style: none;
+        }
+        .footer-section ul li {
+            margin-bottom: 10px;
+        }
+        .footer-section ul li a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .footer-section ul li a:hover {
+            color: #8B0000;
+        }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .social-icons a {
+            color: #fff;
+            font-size: 24px;
+            transition: color 0.3s ease;
+        }
+        .social-icons a:hover {
+            color: #8B0000;
+        }
+        .footer-bottom {
+            background-color: #111;
+            color: #ddd;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: 30px;
+        }
+        @media (max-width: 768px) {
+            header {
+                padding: 10px 20px;
+                flex-direction: column;
+            }
+            nav {
+                margin-top: 10px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            nav a {
+                margin: 5px;
+            }
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .program-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .program-buttons a {
+                width: 80%;
+                text-align: center;
+                margin-bottom: 10px;
+            }
+            .section h2 {
+                font-size: 2rem;
+            }
+            .section-description {
+                font-size: 1rem;
+            }
+            .section-details {
+                font-size: 0.9rem;
+            }
+            .image-carousel {
+                height: 300px;
+            }
+            .faculty .carousel-slide, .alumni .carousel-slide {
+                min-width: 33.33%;
+            }
+            .faculty .carousel-slide img, .alumni .carousel-slide img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+
+        #chatbot-icon {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background-color: #8B0000;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1001; /* Above other content */
+            transition: transform 0.2s ease, background-color 0.3s ease;
+        }
+
+        #chatbot-icon:hover {
+            background-color: #660000;
+            transform: scale(1.1);
+        }
+
+        #chatbot-icon:active {
+            transform: scale(0.95);
+        }
+
+        /* Chatbot Modal Styles */
+        .chatbot-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            right: 0px;
+            width: 30%;
+            height: 100%;
+            /* background-color: rgba(0, 0, 0, 0.5); */
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .chatbot-modal-content {
+            position: relative;
+            width: 400px;
+            height: 500px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        #chatbot-iframe {
+            width: 100%;
+            height: 100%;
+        }
+
+        .chatbot-close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            color: #333;
+            cursor: pointer;
+            z-index: 1002;
+        }
+
+        .chatbot-close:hover {
+            color: #8B0000;
+        }
+
+        @media (max-width: 768px) {
+            .chatbot-modal-content {
+                width: 90%;
+                height: 80%;
+            }
+        }
+
+        
+
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">Business School</div>
+        <nav>
+            <a href="#">Academics</a>
+            <a href="#">Faculty</a>
+            <a href="#">Alumni</a>
+            <a href="#">About</a>
+            
+        </nav>
+    </header>
+
+    <section class="hero">
+        <div class="hero-content">
+            <h1>We educate leaders who make a difference in the world.</h1>
+            <blockquote>"Education is the most powerful weapon which you can use to change the world." - Nelson Mandela</blockquote>
+            <div class="program-buttons">
+                <a href="./student.ejs">Student Login</a>
+                <a href="./faculty.ejs">Faculty Login</a>
+                <a href="./admin.ejs">Admin Login</a>
+            </div>
+        </div>
+    </section>
+
+    
+    <button id="chatbot-icon" title="Open Chatbot">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+
+    <div id="chatbot-modal" class="chatbot-modal">
+        <div class="chatbot-modal-content">
+            <span id="chatbot-close" class="chatbot-close">&times;</span>
+            <iframe id="chatbot-iframe" src="" frameborder="0"></iframe>
+        </div>
+    </div>
+
+    <div class="sections">
+        <section class="section academics section-with-carousel">
+            <h2>Academics</h2>
+            <p class="section-description">Explore our comprehensive academic programs designed to develop future business leaders.</p>
+            <div class="image-carousel" id="academics-carousel">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <img src="https://c0.wallpaperflare.com/preview/416/179/610/kings-college-cambridge-uk-university.jpg" alt="acadamic 1">
+                        <div class="carousel-overlay">
+                            <h3>Innovative Learning Paths</h3>
+                            <p>Cutting-edge curriculum for global business challenges</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://media.istockphoto.com/id/1346675635/photo/modern-medical-research-laboratory-portrait-of-latin-and-black-young-scientists-using.jpg?s=612x612&w=0&k=20&c=9PiRizOrO04C6TSyMhqv7NUDabjhbrrnL3LVLuArGJU=" alt="Academic Programs 2">
+                        <div class="carousel-overlay">
+                            <h3>Research-Driven Education</h3>
+                            <p>Empowering students with knowledge and insight</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://thumbs.dreamstime.com/b/diverse-people-smiling-sitting-outside-holding-folders-multicultural-group-happy-students-looking-camera-backpacks-304765585.jpg" alt="Academic Programs 3">
+                        <div class="carousel-overlay">
+                            <h3>Global Perspective</h3>
+                            <p>Preparing leaders for international business landscape</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://theredpen.in/wp-content/uploads/2025/01/woman-working-her-workshop-creative-invention-4-1024x681.jpg" alt="Academic Programs 4">
+                        <div class="carousel-overlay">
+                            <h3>Interdisciplinary Approach</h3>
+                            <p>Combining theory, practice, and real-world applications</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://case.edu/utech/sites/default/files/styles/large/public/2020-12/nord-active-learning-classroom.jpg?itok=_W07dBW-" alt="Academic Programs 5">
+                        <div class="carousel-overlay">
+                            <h3>Technology-Enhanced Learning</h3>
+                            <p>Leveraging digital tools for comprehensive education</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-control prev-slide"><</button>
+                    <button class="carousel-control next-slide">></button>
+                </div>
+            </div>
+            <p class="section-details">Discover innovative learning paths that prepare you for global business challenges.</p>
+        </section>
+
+        <section class="section faculty section-with-carousel">
+            <h2>Faculty</h2>
+            <p class="section-description">Meet our world-class faculty members who drive research and innovation.</p>
+            <div class="image-carousel" id="faculty-carousel">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <img src="data:image/jpeg;base64,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" alt="Faculty 1">
+                        <div class="carousel-overlay">
+                            <h3>World-Class Researchers</h3>
+                            <p>Leading experts in business</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="data:image/jpeg;base64,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" alt="Faculty 2">
+                        <div class="carousel-overlay">
+                            <h3>Industry Practitioners</h3>
+                            <p>Real-world experience</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="data:image/jpeg;base64,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" alt="Faculty 3">
+                        <div class="carousel-overlay">
+                            <h3>Thought Leaders</h3>
+                            <p>Shaping education</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQjUlz1U0tD1XCrGV3h1cajmk1lhVFru9Qabg&s" alt="Faculty 4">
+                        <div class="carousel-overlay">
+                            <h3>Interdisciplinary Experts</h3>
+                            <p>Bridging research</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT2o7pQHSAFtCjXMVU04uJqvukPH1fOcJX2qg&s" alt="Faculty 5">
+                        <div class="carousel-overlay">
+                            <h3>Mentors</h3>
+                            <p>Nurturing leaders</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-control prev-slide"></button>
+                    <button class="carousel-control next-slide">></button>
+                </div>
+            </div>
+            <p class="section-details">Our mentors are industry leaders, researchers, and thought pioneers in business education.</p>
+        </section>
+
+        <section class="section alumni section-with-carousel">
+            <h2>Alumni</h2>
+            <p class="section-description">Our alumni network spans the globe, making an impact in every industry.</p>
+            <div class="image-carousel" id="alumni-carousel">
+                <div class="carousel-track">
+                    <div class="carousel-slide">
+                        <img src="../public/WhatsApp Image 2025-03-26 at 21.50.18_4fbeb792.jpg" alt="Anirudh">
+                        
+                        <div class="carousel-overlay">
+                            <h3>Success Stories</h3>
+                            <p>Global impact</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../public/IMG_1188.JPG" alt="Alumni 2">
+                        <div class="carousel-overlay">
+                            <h3>Entrepreneurs</h3>
+                            <p>Innovating sectors</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../public/WhatsApp Image 2025-03-26 at 21.53.00_a469d391.jpg" alt="Alumni 3">
+                        <div class="carousel-overlay">
+                            <h3>Thought Leaders</h3>
+                            <p>Driving change</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../public/finalphotograph.jpg" alt="Alumni 4">
+                        <div class="carousel-overlay">
+                            <h3>Social Impact</h3>
+                            <p>Making a difference</p>
+                        </div>
+                    </div>
+                    <div class="carousel-slide">
+                        <img src="../public/WhatsApp Image 2025-03-26 at 22.05.39_1c31ec94.jpg" alt="Alumni 5">
+                        <div class="carousel-overlay">
+                            <h3>Connections</h3>
+                            <p>Support network</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-controls">
+                    <button class="carousel-control prev-slide"><</button>
+                    <button class="carousel-control next-slide">></button>
+                </div>
+            </div>
+            <p class="section-details">A global community of successful professionals who continue to inspire and support each other.</p>
+        </section>
+    </div>
+
+    <footer class="big-footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Academics</a></li>
+                    <li><a href="#">Admissions</a></li>
+                    <li><a href="#">Research</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Programs</h3>
+                <ul>
+                    <li><a href="#">MBA</a></li>
+                    <li><a href="#">Doctoral Programs</a></li>
+                    <li><a href="#">Executive Education</a></li>
+                    <li><a href="#">Online Courses</a></li>
+                    <li><a href="#">Certificate Programs</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Resources</h3>
+                <ul>
+                    <li><a href="#">Library</a></li>
+                    <li><a href="#">Career Services</a></li>
+                    <li><a href="#">Alumni Network</a></li>
+                    <li><a href="#">Student Support</a></li>
+                    <li><a href="#">Research Centers</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Connect With Us</h3>
+                <div class="social-icons">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" title="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+                <ul>
+                    <li>Email: info@businessschool.edu</li>
+                    <li>Phone: +1 (555) 123-4567</li>
+                    <li>Address: 123 Education Lane, Learning City, LC 12345</li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 Business School. All Rights Reserved. | Privacy Policy | Terms of Service
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Scroll-triggered animations for sections
+            const sections = document.querySelectorAll('.section');
+            
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.1
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            sections.forEach(section => {
+                observer.observe(section);
+            });
+
+            // Carousel functionality
+            const carousels = document.querySelectorAll('.image-carousel');
+            
+            carousels.forEach(carousel => {
+                const track = carousel.querySelector('.carousel-track');
+                const slides = Array.from(track.children);
+                const prevButton = carousel.querySelector('.prev-slide');
+                const nextButton = carousel.querySelector('.next-slide');
+                const isFacultyOrAlumni = carousel.parentElement.classList.contains('faculty') || 
+                                       carousel.parentElement.classList.contains('alumni');
+                const slideWidth = isFacultyOrAlumni ? 25 : 100; // 25% for 4 slides, 100% for 1 slide
+                const visibleSlides = isFacultyOrAlumni ? (window.innerWidth <= 768 ? 3 : 4) : 1;
+                let currentPosition = 0;
+                let autoSlideInterval;
+
+                // Clone slides for infinite scroll
+                const clones = slides.slice(0, visibleSlides).map(slide => slide.cloneNode(true));
+                clones.forEach(clone => track.appendChild(clone));
+
+                function updateCarousel() {
+                    track.style.transform = `translateX(-${currentPosition}%)`;
+                }
+
+                function startAutoSlide() {
+                    autoSlideInterval = setInterval(() => {
+                        currentPosition += slideWidth;
+                        const totalWidth = slides.length * slideWidth;
+                        
+                        if (currentPosition >= totalWidth) {
+                            currentPosition = 0;
+                            track.style.transition = 'none';
+                            updateCarousel();
+                            void track.offsetWidth;
+                            track.style.transition = 'transform 0.5s ease-in-out';
+                        }
+                        updateCarousel();
+                    }, 3000);
+                }
+
+                function stopAutoSlide() {
+                    clearInterval(autoSlideInterval);
+                }
+
+                nextButton.addEventListener('click', () => {
+                    stopAutoSlide();
+                    currentPosition += slideWidth;
+                    const totalWidth = slides.length * slideWidth;
+                    if (currentPosition >= totalWidth) {
+                        currentPosition = 0;
+                    }
+                    updateCarousel();
+                    startAutoSlide();
+                });
+
+                prevButton.addEventListener('click', () => {
+                    stopAutoSlide();
+                    currentPosition -= slideWidth;
+                    if (currentPosition < 0) {
+                        currentPosition = (slides.length - visibleSlides) * slideWidth;
+                    }
+                    updateCarousel();
+                    startAutoSlide();
+                });
+
+                carousel.addEventListener('mouseenter', stopAutoSlide);
+                carousel.addEventListener('mouseleave', startAutoSlide);
+
+                startAutoSlide();
+            });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            // Existing carousel and section observer code here...
+
+            // Chatbot Icon and Modal Functionality
+            const chatbotIcon = document.getElementById('chatbot-icon');
+            const chatbotModal = document.getElementById('chatbot-modal');
+            const chatbotIframe = document.getElementById('chatbot-iframe');
+            const chatbotClose = document.getElementById('chatbot-close');
+
+            chatbotIcon.addEventListener('click', () => {
+                chatbotIframe.src = 'chat_bot.html'; // Load chatbot only when clicked
+                chatbotModal.style.display = 'flex';
+            });
+
+            chatbotClose.addEventListener('click', () => {
+                chatbotModal.style.display = 'none';
+                chatbotIframe.src = ''; // Clear iframe to stop any processes
+            });
+
+            // Close modal when clicking outside the content
+            chatbotModal.addEventListener('click', (e) => {
+                if (e.target === chatbotModal) {
+                    chatbotModal.style.display = 'none';
+                    chatbotIframe.src = '';
+                }
+            });
+        });
+        
+        
+
+
+        
+        
+    </script>
+</body>
+</html>

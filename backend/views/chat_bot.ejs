@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>College Assistant Chatbot</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #1a1c20 0%, #2c3e50 100%);
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #e0e0e0;
+            position: relative; 
+        }
+
+        
+        .profile-dp {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 80px;
+            height: 80px;
+            background: url('https://sharedp.com/wp-content/uploads/2024/06/cute-dp-for-girls-cartoon-960x1024.jpg') no-repeat center/cover;
+            border-radius: 50%;
+            border: 3px solid #3d315b; 
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+        }
+
+        #chat-container {
+            width: 100%;
+            max-width: 800px;
+            height: 90vh;
+            background: #1e2124;
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            position: relative; 
+        }
+
+        #chat-header {
+            background: linear-gradient(135deg, #2c3e50 0%, #3d315b 100%);
+            color: white;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .bot-avatar {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bot-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header-text h1 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .header-text p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        #chat-box {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            background: #2c2f33;
+        }
+
+        .message {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-avatar {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+
+        .bot-message .message-avatar {
+            background: linear-gradient(135deg, #2c3e50 0%, #3d315b 100%);
+            color: white;
+        }
+
+        .bot-message .message-avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .user-message .message-avatar {
+            background: #40444b;
+            color: #ffffff;
+        }
+
+        .message-content {
+            background: #40444b;
+            padding: 12px 16px;
+            border-radius: 15px;
+            max-width: 70%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            color: #ffffff;
+            border: 2px solid #3d315b;
+        }
+
+        .bot-message .message-content {
+            background: #40444b;
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .user-message .message-content {
+            background: #3d315b;
+            color: white;
+            margin-right: 12px;
+        }
+
+        #input-box {
+            padding: 20px;
+            background: #1e2124;
+            border-top: 1px solid #40444b;
+            display: flex;
+            gap: 10px;
+        }
+
+        #user-input {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #40444b;
+            border-radius: 25px;
+            outline: none;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: #40444b;
+            color: white;
+        }
+
+        #user-input::placeholder {
+            color: #a0a0a0;
+        }
+
+        #user-input:focus {
+            border-color: #3d315b;
+        }
+
+        #send-button {
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c3e50 0%, #3d315b 100%);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+        }
+
+        #send-button:hover {
+            transform: scale(1.05);
+        }
+
+        #send-button:active {
+            transform: scale(0.95);
+        }
+
+        #chat-box::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        #chat-box::-webkit-scrollbar-track {
+            background: #2c2f33;
+        }
+
+        #chat-box::-webkit-scrollbar-thumb {
+            background: #40444b;
+            border-radius: 4px;
+        }
+
+        #chat-box::-webkit-scrollbar-thumb:hover {
+            background: #4a4f57;
+        }
+
+        .quick-replies {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .quick-reply-btn {
+            background: #40444b;
+            border: 2px solid #3d315b;
+            color: #ffffff;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
+        }
+
+        .quick-reply-btn:hover {
+            background: #3d315b;
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px 12px;
+            background: #40444b;
+            border-radius: 15px;
+            width: fit-content;
+            border: 2px solid #3d315b;
+        }
+
+        .typing-dot {
+            width: 8px;
+            height: 8px;
+            background: #ffffff;
+            border-radius: 50%;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typingAnimation {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        #speak-button {
+            width: 45px;
+            height: 45px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2c3e50 0%, #3d315b 100%);
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.2s ease;
+            margin-right: 10px;
+        }
+
+        #speak-button:hover {
+            transform: scale(1.05);
+        }
+
+        #speak-button:active {
+            transform: scale(0.95);
+        }
+
+        #speak-button.speaking {
+            background: linear-gradient(135deg, #e74c3c 0%, #c0392b 100%);
+        }
+
+        @media (max-width: 600px) {
+            #chat-container {
+                height: 100vh;
+                border-radius: 0;
+            }
+
+            body {
+                padding: 0;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .header-text h1 {
+                font-size: 1.2rem;
+            }
+
+            .header-text p {
+                font-size: 0.8rem;
+            }
+
+            .profile-dp {
+                width: 60px;
+                height: 60px;
+                top: 10px;
+                left: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="profile-dp"></div> <!-- Circular DP in upper-left -->
+    <div id="chat-container">
+        <div id="chat-header">
+            <div class="bot-avatar">
+                <img src="https://sharedp.com/wp-content/uploads/2024/06/cute-dp-for-girls-cartoon-960x1024.jpg" alt="Animated Bot Avatar">
+            </div>
+            <div class="header-text">
+                <h1>Vidyasri: College Assistant</h1>
+                <p>Your guide for students, faculty, and admin</p>
+            </div>
+        </div>
+        <div id="chat-box">
+            <div class="message bot-message">
+                <div class="message-avatar">
+                    <img src="https://sharedp.com/wp-content/uploads/2024/06/cute-dp-for-girls-cartoon-960x1024.jpg" alt="Animated Bot Avatar">
+                </div>
+                <div class="message-content">
+                    Welcome to the College Assistant Chatbot! Which language would you prefer?
+                    <div class="quick-replies">
+                        <button class="quick-reply-btn" onclick="selectLanguage('English')">English</button>
+                        <button class="quick-reply-btn" onclick="selectLanguage('Hindi')">हिंदी</button>
+                        <button class="quick-reply-btn" onclick="selectLanguage('German')">Deutsch</button>
+                        <button class="quick-reply-btn" onclick="selectLanguage('Tamil')">தமிழ்</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="input-box">
+            <button id="speak-button" onclick="toggleSpeech()">
+                <i class="fas fa-volume-up"></i>
+            </button>
+            <input type="text" id="user-input" placeholder="Type your message here..." onkeypress="handleKeyPress(event)">
+            <button onclick="sendMessage()" id="send-button">
+                <i class="fas fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+    <script>
+        let selectedLanguage = '';
+        let isSpeaking = false;
+        let speechQueue = [];
+
+        // Initialize speech synthesis
+        window.speechSynthesis.onvoiceschanged = function() {
+            voices = window.speechSynthesis.getVoices();
+        };
+        let voices = [];
+
+        function toggleSpeech() {
+            const speakButton = document.getElementById('speak-button');
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+                speakButton.classList.remove('speaking');
+                isSpeaking = false;
+            } else {
+                speakButton.classList.add('speaking');
+                isSpeaking = true;
+                const botMessages = document.querySelectorAll('.bot-message .message-content');
+                if (botMessages.length > 0) {
+                    const lastMessage = botMessages[botMessages.length - 1].textContent;
+                    speakMessage(lastMessage);
+                }
+            }
+        }
+
+        function speakMessage(text) {
+            if (!isSpeaking) return;
+
+            const utterance = new SpeechSynthesisUtterance(text);
+            switch(selectedLanguage) {
+                case 'Hindi':
+                    utterance.lang = 'hi-IN';
+                    break;
+                case 'German':
+                    utterance.lang = 'de-DE';
+                    break;
+                case 'Tamil':
+                    utterance.lang = 'ta-IN';
+                    break;
+                default:
+                    utterance.lang = 'en-GB';
+            }
+
+            utterance.onend = function() {
+                document.getElementById('speak-button').classList.remove('speaking');
+            };
+
+            utterance.onerror = function() {
+                document.getElementById('speak-button').classList.remove('speaking');
+            };
+
+            window.speechSynthesis.speak(utterance);
+        }
+
+        function appendMessage(message, sender) {
+            const chatBox = document.getElementById('chat-box');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            const avatarDiv = document.createElement('div');
+            avatarDiv.className = 'message-avatar';
+            if (sender === 'bot') {
+                avatarDiv.innerHTML = `<img src="https://sharedp.com/wp-content/uploads/2024/06/cute-dp-for-girls-cartoon-960x1024.jpg" alt="Bot Avatar">`;
+            } else {
+                avatarDiv.innerHTML = `<i class="fas fa-user"></i>`;
+            }
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.textContent = message;
+            
+            messageDiv.appendChild(avatarDiv);
+            messageDiv.appendChild(contentDiv);
+            chatBox.appendChild(messageDiv);
+            
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            if (sender === 'bot' && isSpeaking) {
+                speakMessage(message);
+            }
+        }
+
+        async function processInput(input) {
+            input = input.toLowerCase();
+            let response = await getGeminiResponse(input);
+            response = response.replace(/\\/g, '');
+            response = response.replace(/[^a-zA-Z0-9\s\u0900-\u097F\u0B80-\u0BFF]/g, '');  
+            return response;
+        }
+
+        async function getGeminiResponse(userInput) {
+            const YOUR_API_KEY = 'AIzaSyCtB3_w3CEAkxMVt8sF9o1PNFFryCRkqmY';
+            const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${YOUR_API_KEY}`;
+            
+            const requestBody = {
+                contents: [
+                    {
+                        parts: [
+                            { text: userInput + ` (respond in ${selectedLanguage})` }
+                        ]
+                    }
+                ]
+            };
+            
+            try {
+                const response = await fetch(apiUrl, {
+                    method: "POST",
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                
+                const data = await response.json();
+                
+                if (data.candidates && data.candidates[0] && data.candidates[0].content && data.candidates[0].content.parts[0].text) {
+                    return data.candidates[0].content.parts[0].text.replace(/\\(.?)\\*/g, "$1").trim();
+                } else {
+                    return "Sorry, I couldn't find an answer to that.";
+                }
+            } catch (error) {
+                console.log("There was a problem with the fetch operation:", error);
+                return "Sorry, I couldn't understand that.";
+            }
+        }
+
+        async function sendMessage() {
+            const input = document.getElementById('user-input');
+            const message = input.value.trim();
+            
+            if (message) {
+                appendMessage(message, 'user');
+                input.value = '';
+                
+                const typingIndicator = document.createElement('div');
+                typingIndicator.className = 'message bot-message typing-indicator';
+                typingIndicator.innerHTML = `
+                    <div class="message-avatar">
+                        <img src="https://sharedp.com/wp-content/uploads/2024/06/cute-dp-for-girls-cartoon-960x1024.jpg" alt="Bot Avatar">
+                    </div>
+                    <div class="message-content">
+                        <div class="typing-indicator">
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                            <div class="typing-dot"></div>
+                        </div>
+                    </div>`;
+                document.getElementById('chat-box').appendChild(typingIndicator);
+
+                const response = await processInput(message);
+                typingIndicator.remove();
+                appendMessage(response, 'bot');
+            }
+        }
+
+        function selectLanguage(language) {
+            selectedLanguage = language;
+            const message = `Selected language: ${language}`;
+            appendMessage(message, 'user');
+            
+            let botResponse = '';
+            switch(language) {
+                case 'English':
+                    botResponse = "Great! I'm here to assist students, faculty, and admin. How can I help you today?";
+                    break;
+                case 'Hindi':
+                    botResponse = "बढ़िया! मैं छात्रों, शिक्षकों और प्रशासन की मदद के लिए हूँ। आज मैं आपकी कैसे सहायता कर सकता हूँ?";
+                    break;
+                case 'German':
+                    botResponse = "Ausgezeichnet! Ich bin hier, um Studenten, Fakultät und Verwaltung zu helfen. Wie kann ich Ihnen heute helfen?";
+                    break;
+                case 'Tamil':
+                    botResponse = "நல்லது! நான் மாணவர்கள், ஆசிரியர்கள் மற்றும் நிர்வாகத்திற்கு உதவ இங்கு இருக்கிறேன். இன்று உங்களுக்கு எப்படி உதவ முடியும்?";
+                    break;
+            }
+            
+            setTimeout(() => {
+                appendMessage(botResponse, 'bot');
+            }, 500);
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendMessage();
+            }
+        }
+    </script>
+</body>
+</html>

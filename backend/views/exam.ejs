@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Exam Results</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link rel="stylesheet" href="../public/style.css">
+
+    <style>
+        body { 
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: var(--color-background);
+            overflow-x: hidden;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--color-background);
+            padding: 1rem 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .logo h2 {
+            margin: 0;
+            font-size: 1.5rem;
+        }
+
+        .navbar {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .navbar a {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+            color: var(--color-dark);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .navbar a:hover {
+            background: var(--color-light);
+        }
+
+        .navbar a.active {
+            background: var(--color-light);
+            font-weight: 600;
+            color: var(--color-primary);
+        }
+
+        .navbar .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+
+        .navbar .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: var(--color-white);
+            min-width: 180px;
+            border-radius: 5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            z-index: 1;
+            left: 0;
+            top: 100%;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .navbar .dropdown-content a {
+            color: var(--color-dark);
+            padding: 0.75rem 1rem;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+
+        .navbar .dropdown-content a:hover {
+            background-color: var(--color-light);
+            color: var(--color-primary);
+        }
+
+        .navbar .dropdown.active .dropdown-content {
+            display: block;
+        }
+
+        .theme-toggler {
+            display: flex;
+            gap: 0.5rem;
+            cursor: pointer;
+        }
+
+        .theme-toggler span {
+            padding: 0.3rem;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .theme-toggler span.active {
+            background: var(--color-primary);
+            color: var(--color-white);
+        }
+
+        .exam {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 90%;
+            max-width: 1200px;
+            margin: 100px auto 2rem;
+            padding: 2rem;
+        }
+            
+        .exam h2 {
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            color: var(--color-dark);
+        }
+
+        .exam table {
+            width: 100%;
+            border-collapse: collapse;
+            background: var(--color-white);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 2rem;
+        }
+
+        .exam th, .exam td {
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 1px solid var(--color-light);
+        }
+
+        .exam th {
+            background: var(--color-background);
+            font-weight: 600;
+            color: var(--color-dark);
+        }
+
+        .exam td {
+            color: var(--color-dark-varient);
+        }
+
+        .exam tr:last-child td {
+            border-bottom: none;
+        }
+
+        .exam tr:hover {
+            background: var(--color-light);
+            transition: background 0.2s ease;
+        }
+
+        .exam th[rowspan="2"], 
+        .exam td.total, 
+        .exam td.grade {
+            font-weight: 600;
+        }
+
+        .exam td.total {
+            color: var(--color-primary);
+        }
+
+        .exam td.grade {
+            color: var(--color-success);
+        }
+        
+        .charts-container {
+            display: flex;
+            flex-direction: column; /* Changed back to column to stack subjects vertically */
+            gap: 2rem;
+            width: 100%;
+            padding: 1rem 0;
+        }
+        
+
+        .subject-charts {
+            /* background: var(--color-white); */
+            padding: 1.5rem;
+            border-radius: 12px;
+            /* box-shadow: 0 2px 10px rgba(0,0,0,0.05); */
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* .subject-charts:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        } */
+
+        .subject-charts h3 {
+            margin: 0 0 1rem 0;
+            color: var(--color-dark);
+            font-size: 1.2rem;
+            width: 100%;
+            text-align: left;
+        }
+
+        .charts-row {
+            display: flex;
+            flex-wrap: nowrap;
+            gap: 3rem;
+            width: 100%;
+            justify-content: center; /* Center the charts */
+        }
+
+        .chart-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 200px;
+            flex-shrink: 0;
+        }
+
+        .chart-wrapper canvas {
+            width: 100px !important;
+            height: 100px !important;
+            margin: 0 auto; /* Ensure canvas is centered */
+        }
+
+        .chart-wrapper .label {
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+            color: var(--color-dark-varient);
+            text-align: center; /* Center the label text */
+        }
+
+        .chart-wrapper .percentage {
+            margin-top: 0.3rem;
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 0.85rem;
+            text-align: center; /* Center the percentage text */
+        }
+        main .timetable h2{
+                margin-right: 100px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="./images/logo.png" alt="">
+            <h2>U<span class="danger">M</span>S</h2>
+        </div>
+        <div class="navbar">
+            <a href="index.ejs">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            <a href="timetable.ejs" onclick="timeTableAll()">
+                <span class="material-icons-sharp">today</span>
+                <h3>Time Table</h3>
+            </a> 
+            <div class="dropdown">
+                <a href="#" class="exam-link active" onclick="toggleDropdown(event)">
+                    <span class="material-icons-sharp">grid_view</span>
+                    <h3>Examination</h3>
+                </a>
+                <div class="dropdown-content">
+                    <a href="exam2.ejs">Exam Schedule</a>
+                    <a href="exam.ejs">Exam Results</a>
+                </div>
+            </div>
+            <a href="#">
+                <span class="material-icons-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn" style="display: none;">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+    </header>
+
+    <main>
+        <br>
+        <div class="exam timetable">
+            <h2 >Exam Results</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th rowspan="2">Subject</th>
+                        <th colspan="2">CAT1</th>
+                        <th colspan="2">CAT2</th>
+                        <th colspan="2">FAT</th>
+                        <th rowspan="2">Total (200)</th>
+                        <th rowspan="2">Grade</th>
+                    </tr>
+                    <tr>
+                        <th>Marks (50)</th>
+                        <th>Class Avg (50)</th>
+                        <th>Marks (50)</th>
+                        <th>Class Avg (50)</th>
+                        <th>Marks (100)</th>
+                        <th>Class Avg (100)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>CS200</td>
+                        <td>42</td>
+                        <td>38</td>
+                        <td>45</td>
+                        <td>40</td>
+                        <td>88</td>
+                        <td>82</td>
+                        <td class="total"></td>
+                        <td class="grade"></td>
+                    </tr>
+                    <tr>
+                        <td>DBMS130</td>
+                        <td>38</td>
+                        <td>35</td>
+                        <td>40</td>
+                        <td>37</td>
+                        <td>85</td>
+                        <td>78</td>
+                        <td class="total"></td>
+                        <td class="grade"></td>
+                    </tr>
+                    <tr>
+                        <td>MTH166</td>
+                        <td>45</td>
+                        <td>40</td>
+                        <td>47</td>
+                        <td>42</td>
+                        <td>92</td>
+                        <td>85</td>
+                        <td class="total"></td>
+                        <td class="grade"></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="charts-container" id="chartsContainer"></div>
+        </div>
+    </main>
+
+    <script>
+        const sideMenu = document.querySelector("aside");
+        const profileBtn = document.querySelector("#profile-btn");
+        const themeToggler = document.querySelector(".theme-toggler");
+
+        if (profileBtn) {
+            profileBtn.onclick = function() {
+                sideMenu.classList.toggle('active');
+            }
+        }
+
+        window.onscroll = () => {
+            if (sideMenu) sideMenu.classList.remove('active');
+            if (window.scrollY > 0) {
+                document.querySelector('header').classList.add('active');
+            } else {
+                document.querySelector('header').classList.remove('active');
+            }
+        }
+
+        if (themeToggler) {
+            themeToggler.onclick = function() {
+                document.body.classList.toggle('dark-theme');
+                themeToggler.querySelector('span:nth-child(1)').classList.toggle('active');
+                themeToggler.querySelector('span:nth-child(2)').classList.toggle('active');
+            }
+        }
+
+        function toggleDropdown(event) {
+            event.preventDefault();
+            const dropdown = event.currentTarget.parentElement;
+            dropdown.classList.toggle('active');
+        }
+
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.dropdown');
+            if (!dropdown.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+
+        function calculateResults() {
+            const rows = document.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+                const cat1Marks = parseFloat(row.cells[1].textContent) || 0;
+                const cat2Marks = parseFloat(row.cells[3].textContent) || 0;
+                const fatMarks = parseFloat(row.cells[5].textContent) || 0;
+                const total = cat1Marks + cat2Marks + fatMarks;
+
+                const totalCell = row.querySelector('.total');
+                if (totalCell) totalCell.textContent = total;
+
+                const gradeCell = row.querySelector('.grade');
+                if (gradeCell) gradeCell.textContent = getGrade(total);
+            });
+        }
+
+        function getGrade(total) {
+            if (total >= 180) return 'A+';
+            else if (total >= 160) return 'A';
+            else if (total >= 140) return 'B+';
+            else if (total >= 120) return 'B';
+            else if (total >= 100) return 'C+';
+            else if (total >= 80) return 'C';
+            else if (total >= 60) return 'D';
+            else return 'F';
+        }
+
+        function drawCircularChart(canvas, value, max) {
+            const ctx = canvas.getContext('2d');
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+            const radius = 40;
+            const lineWidth = 8;
+            const percentage = (value / max) * 100;
+            let progress = 0;
+
+            function animate() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Background circle
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, 2 * Math.PI);
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = 'rgba(132, 139, 200, 0.2)';
+                ctx.stroke();
+
+                // Progress circle
+                const endAngle = (progress / 100) * 2 * Math.PI - Math.PI / 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, -Math.PI / 2, endAngle);
+                ctx.lineWidth = lineWidth;
+                ctx.strokeStyle = 'var(--color-primary)';
+                ctx.lineCap = 'round';
+                ctx.stroke();
+
+                // Percentage text
+                ctx.font = '12px Poppins';
+                ctx.fillStyle = 'var(--color-dark)';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(`${Math.round(progress)}%`, centerX, centerY);
+
+                if (progress < percentage) {
+                    progress += 1;
+                    requestAnimationFrame(animate);
+                }
+            }
+
+            animate();
+            return percentage;
+        }
+
+        function createCharts() {
+            const container = document.getElementById('chartsContainer');
+            const rows = document.querySelectorAll('tbody tr');
+
+            rows.forEach(row => {
+                const subject = row.cells[0].textContent;
+                const cat1Marks = parseFloat(row.cells[1].textContent) || 0;
+                const cat2Marks = parseFloat(row.cells[3].textContent) || 0;
+                const fatMarks = parseFloat(row.cells[5].textContent) || 0;
+
+                const subjectDiv = document.createElement('div');
+                subjectDiv.className = 'subject-charts';
+
+                const title = document.createElement('h3');
+                title.textContent = subject;
+                subjectDiv.appendChild(title);
+
+                const chartsRow = document.createElement('div');
+                chartsRow.className = 'charts-row';
+
+                const charts = [
+                    { label: 'CAT1', value: cat1Marks, max: 50 },
+                    { label: 'CAT2', value: cat2Marks, max: 50 },
+                    { label: 'FAT', value: fatMarks, max: 100 }
+                ];
+
+                charts.forEach(chart => {
+                    const wrapper = document.createElement('div');
+                    wrapper.className = 'chart-wrapper';
+
+                    const canvas = document.createElement('canvas');
+                    canvas.width = 100;
+                    canvas.height = 100;
+
+                    const label = document.createElement('div');
+                    label.className = 'label';
+                    label.textContent = chart.label;
+
+                    const percentage = document.createElement('div');
+                    percentage.className = 'percentage';
+
+                    wrapper.appendChild(canvas);
+                    wrapper.appendChild(label);
+                    wrapper.appendChild(percentage);
+                    chartsRow.appendChild(wrapper);
+
+                    const finalPercentage = drawCircularChart(canvas, chart.value, chart.max);
+                    percentage.textContent = `${chart.value}/${chart.max} (${Math.round(finalPercentage)}%)`;
+                });
+
+                subjectDiv.appendChild(chartsRow);
+                container.appendChild(subjectDiv);
+            });
+        }
+
+        window.onload = function() {
+            calculateResults();
+            createCharts();
+        };
+    </script>
+</body>
+</html>

@@ -12,7 +12,7 @@ const JWT_SECRET = "studentSecret";
 router.post('/createUser', [
     body('studentID').notEmpty(),
     body('name').notEmpty(),
-    body("password").isLength({ min: 6 })
+    body('password').isLength({ min: 6 })
 ], async (req, res) => {
     const result = validationResult(req);
     if (!result.isEmpty()) {
@@ -88,9 +88,10 @@ router.post("/login", [
 });
 
 // Fetch Student Details
-router.get('/getUser', FetchUser, async (req, res) => {
+router.get('/getUser', async (req, res) => {
     try {
-        const student = await Student.findOne({ studentID: req.user.id }).select("-password");
+        const {studentID} = req.body
+        const student = await Student.findOne({ studentID: studentID}).select("-password");
         if (!student) {
             return res.status(404).json({ error: "Student not found" });
         }

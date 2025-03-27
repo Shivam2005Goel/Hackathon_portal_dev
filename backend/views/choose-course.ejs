@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Choose Course</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link rel="stylesheet" href="../public/style.css">
+    <style>
+        .course-list {
+            margin: 80px auto;
+            padding: 2rem;
+            background: var(--color-white);
+            border-radius: var(--border-radius-1);
+            box-shadow: var(--box-shadow);
+            width: 90%;
+            max-width: 1000px;
+        }
+        .course-list h2 {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+        .courses {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .course-item {
+            background: #f9f9f9;
+            padding: 1rem;
+            border-radius: var(--border-radius-1);
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .course-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+        .course-item span {
+            font-size: 2rem;
+            color: var(--color-primary);
+        }
+        .course-item h3 {
+            margin: 0.5rem 0;
+        }
+        .course-item small {
+            color: #888;
+        }
+        .selected-course {
+            margin-top: 2rem;
+            padding: 1rem;
+            background: var(--color-light);
+            border-radius: var(--border-radius-1);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="./images/logo.png" alt="">
+            <h2>U<span class="danger">M</span>S</h2>
+        </div>
+        <div class="navbar">
+            <a href="./facdash.ejs">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            <a href="./facultytimetable.ejs">
+                <span class="material-icons-sharp">today</span>
+                <h3>Timetable</h3>
+            </a>
+            <a href="./attendance.ejs">
+                <span class="material-icons-sharp">event_available</span>
+                <h3>Attendance</h3>
+            </a>
+            <a href="./choose-course.ejs" class="active">
+                <span class="material-icons-sharp">school</span>
+                <h3>Choose Course</h3>
+            </a>
+            <div class="eval-dropdown">
+                <a href="./evaluation.ejs">
+                    <span class="material-icons-sharp">grid_view</span>
+                    <h3>Evaluation</h3>
+                </a>
+                <div class="dropdown-content">
+                    <a href="./exam-schedule.ejs">Exam Schedule</a>
+                    <a href="./grade-entry.ejs">Grade Entry</a>
+                </div>
+            </div>
+            <a href="#">
+                <span class="material-icons-sharp">logout</span>
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn" style="display: none;">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+    </header>
+
+    <main style="margin: 0;">
+        <div class="course-list">
+            <h2>Choose a Course</h2>
+            <div class="courses" id="course-list">
+                <!-- Courses will be populated dynamically -->
+            </div>
+            <div class="selected-course" id="selected-course" style="display: none;">
+                <h3>Selected Course</h3>
+                <p id="selected-course-details"></p>
+            </div>
+        </div>
+    </main>
+   <!-- At the bottom of choose-course.html -->
+<script src="../public/appfac.js"></script>
+    
+</body>
+</html>

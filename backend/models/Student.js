@@ -13,7 +13,17 @@ const studentSchema = new mongoose.Schema({
   department: { type: String, required: true },
   cgpa: { type: Number },
   enrollmentYear: { type: Number },
-  marks: [{ subject: String, score: Number }]  // Corrected the marks array structure
+
+  // Enrolled Courses with Faculty and Marks Information
+  coursesEnrolled: [
+    {
+      courseID: { type: String, required: true },
+      courseName: { type: String, required: true },
+      facultyID: { type: String, required: true },
+      facultyName: { type: String, required: true },
+      marks: { type: Number, default: 0 }  // Marks for this course
+    }
+  ]
 });
 
 module.exports = mongoose.model("Student", studentSchema);

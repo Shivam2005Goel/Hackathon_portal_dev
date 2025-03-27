@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-6 max-w-xl">
+        <h1 class="text-3xl font-bold mb-6 text-red-700 text-center">Student Management System</h1>
+        
+        <!-- Add Student Form -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-6 border-l-4 border-red-700">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">Add New Student</h2>
+            <div class="space-y-4">
+                <input type="text" id="studentName" placeholder="Enter Student Name" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300" required>
+                <input type="text" id="studentID" placeholder="Enter Student ID" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300" required>
+                <input type="email" id="studentEmail" placeholder="Enter Email" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300" required>
+                <input type="password" id="studentPassword" placeholder="Enter Password" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300" required>
+                <input type="tel" id="studentPhone" placeholder="Enter Phone Number" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300">
+                <div class="grid grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Date of Birth</label>
+                        <input type="date" id="studentDOB" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Gender</label>
+                        <select id="studentGender" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300">
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="studentCourse" placeholder="Enter Course" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300">
+                    <input type="number" id="studentYear" placeholder="Year of Study" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300" min="1" max="10">
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    <input type="text" id="studentDepartment" placeholder="Enter Department" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300" required>
+                    <input type="number" id="studentCGPA" placeholder="Enter CGPA" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300" step="0.01" min="0" max="10">
+                </div>
+                <input type="number" id="studentEnrollmentYear" placeholder="Enrollment Year" class="border p-2 w-full rounded focus:outline-none focus:ring-2 focus:ring-red-300" min="1900" max="2099">
+                <button onclick="addStudent()" class="w-full bg-red-700 text-white px-4 py-2 rounded hover:bg-red-800 transition duration-300">Add Student</button>
+            </div>
+        </div>
+        
+        <!-- Student List -->
+        <div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-red-700">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-xl font-semibold text-gray-800">Student List</h2>
+                <button onclick="fetchStudents()" class="bg-green-600 text-white px-3 py-1 rounded hover:bg-green-700 transition duration-300">
+                    Refresh List
+                </button>
+            </div>
+            <ul id="studentList" class="space-y-2">
+                <!-- Dynamically populated student entries will go here -->
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        // Fetch students when the page loads
+        document.addEventListener('DOMContentLoaded', fetchStudents);
+
+        async function fetchStudents() {
+            try {
+                const list = document.getElementById("studentList");
+                list.innerHTML = ''; // Clear existing list
+
+                const response = await fetch("http://localhost:3000/api/student/getUser", {
+                    method: "GET",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to fetch students');
+                }
+
+                const students = await response.json();
+
+                if (students.length === 0) {
+                    list.innerHTML = '<li class="text-center text-gray-500">No students found</li>';
+                    return;
+                }
+
+                students.forEach(student => displayStudent(student));
+            } catch (error) {
+                console.error("Error fetching students:", error);
+                const list = document.getElementById("studentList");
+                list.innerHTML = `<li class="text-center text-red-500">Error loading students: ${error.message}</li>`;
+            }
+        }
+
+        async function addStudent() {
+            const studentData = {
+                name: document.getElementById("studentName").value,
+                studentID: document.getElementById("studentID").value,
+                email: document.getElementById("studentEmail").value,
+                password: document.getElementById("studentPassword").value,
+                phoneNumber: document.getElementById("studentPhone").value,
+                dateOfBirth: document.getElementById("studentDOB").value,
+                gender: document.getElementById("studentGender").value,
+                course: document.getElementById("studentCourse").value,
+                yearOfStudy: document.getElementById("studentYear").value,
+                department: document.getElementById("studentDepartment").value,
+                cgpa: document.getElementById("studentCGPA").value,
+                enrollmentYear: document.getElementById("studentEnrollmentYear").value
+            };
+
+            // Enhanced validation
+            const requiredFields = ['name', 'studentID', 'email', 'password', 'department'];
+            const missingFields = requiredFields.filter(field => !studentData[field]);
+
+            if (missingFields.length > 0) {
+                alert(`Please fill in the following required fields: ${missingFields.join(', ')}`);
+                return;
+            }
+
+            // Email validation
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(studentData.email)) {
+                alert("Please enter a valid email address.");
+                return;
+            }
+
+            try {
+                const response = await fetch("http://localhost:3000/api/auth/student/createUser", {
+                    method: "POST",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Accept": "application/json"
+                    },
+                    body: JSON.stringify(studentData)
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert("Student added successfully!");
+                    
+                    // Reset form
+                    document.querySelectorAll("input").forEach(input => input.value = "");
+                    document.getElementById("studentGender").selectedIndex = 0;
+
+                    // Refresh student list
+                    fetchStudents();
+                } else {
+                    alert(result.message || "Error adding student.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to connect to the server. Please check if your backend is running.");
+            }
+        }
+
+        function displayStudent(student) {
+            const list = document.getElementById("studentList");
+            const li = document.createElement("li");
+            li.classList.add('flex', 'justify-between', 'items-center', 'p-3', 'bg-gray-100', 'rounded');
+            li.innerHTML = `
+                <div>
+                    <span class="font-semibold">${student.name}</span>
+                    <div class="text-gray-600 text-sm">
+                        ID: ${student.studentID} | Email: ${student.email} | Dept: ${student.department}
+                    </div>
+                </div>
+                <button onclick="removeStudent('${student.studentID}', this)" class="text-red-500 hover:text-red-700 transition duration-300">
+                    Remove
+                </button>
+            `;
+            list.appendChild(li);
+        }
+
+        async function removeStudent(studentId, button) {
+            try {
+                const response = await fetch(`http://localhost:3000/api/auth/student/delete/${studentId}`, {
+                    method: "DELETE"
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    // Refresh student list
+                    fetchStudents();
+                    alert("Student removed successfully!");
+                } else {
+                    alert(result.message || "Error deleting student.");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Failed to connect to the server.");
+            }
+        }
+    </script>
+</body>
+</html>

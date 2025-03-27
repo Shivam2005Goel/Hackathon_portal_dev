@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard</title>
+    <link rel="shortcut icon" href="./images/logo.png">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
+    <link rel="stylesheet" href="../public/style.css">
+
+    <style>
+        /* Dropdown styles */
+        .navbar .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .navbar .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #fff;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+            z-index: 1;
+            left: 0;
+            top: 100%;
+        }
+        .navbar .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+        }
+        .navbar .dropdown-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .navbar .dropdown.active .dropdown-content {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="logo" title="University Management System">
+            <img src="./images/logo.png" alt=""> <!-- Fixed empty src attribute -->
+            <h2>U<span class="danger">M</span>S</h2>
+        </div>
+        <div class="navbar">
+            <a href="index.ejs" class="active">
+                <span class="material-icons-sharp">home</span>
+                <h3>Home</h3>
+            </a>
+            <a href="timetable.ejs" onclick="timeTableAll()">
+                <span class="material-icons-sharp">today</span>
+                <h3>Time Table</h3>
+            </a> 
+            <div class="dropdown">
+                <a href="exam.ejs" class="exam-link" onclick="toggleDropdown(event)">
+                    <span class="material-icons-sharp">grid_view</span>
+                    <h3>Examination</h3>
+                </a>
+                <div class="dropdown-content">
+                    <a href="exam2.ejs">Exam Schedule</a>
+                    <a href="exam.ejs">Exam Results</a>
+                </div>
+            </div>
+            <!-- <a href="1password.html">
+                <span class="material-icons-sharp">password</span>
+                <h3>Change Password</h3>
+            </a> -->
+            <a href="#">
+                <span class="material-icons-sharp">logout</span> <!-- Removed unnecessary onclick="" -->
+                <h3>Logout</h3>
+            </a>
+        </div>
+        <div id="profile-btn">
+            <span class="material-icons-sharp">person</span>
+        </div>
+        <div class="theme-toggler">
+            <span class="material-icons-sharp active">light_mode</span>
+            <span class="material-icons-sharp">dark_mode</span>
+        </div>
+    </header>
+    <div class="container">
+        <aside>
+            <div class="profile">
+                <div class="top">
+                    <div class="info">
+                        <p>Hey, <b>Anirudh</b></p>
+                        <small class="text-muted">23BRS1250</small>
+                    </div>
+                </div>
+                <div class="about">
+                    <h5>DOB</h5>
+                    <p>18-Nov-2004</p>
+                    <h5>Contact</h5>
+                    <p>7014319880</p>
+                    <h5>Email</h5>
+                    <p>anirudh@gmail.com</p>
+                </div>
+            </div>
+        </aside>
+
+        <main>
+            <h1>Attendance</h1>
+            <div class="subjects">
+                <div class="eg">
+                    <span class="material-icons-sharp">architecture</span>
+                    <h3>Operating Systems</h3>
+                    <h4></h4>
+                    <h2>12/14</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>86%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <div class="mth">
+                    <span class="material-icons-sharp">functions</span>
+                    <h3>Complex Variable</h3>
+                    <h2>27/29</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>93%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <div class="cs">
+                    <span class="material-icons-sharp">computer</span>
+                    <h3>Computer Architecture</h3>
+                    <h2>27/30</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>81%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+                <div class="cg">
+                    <span class="material-icons-sharp">dns</span>
+                    <h3>Database Management</h3>
+                    <h2>24/25</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>96%</p></div>
+                    </div>
+                    <small class="text-muted Glenn">Last 24 Hours</small>
+                </div>
+                <div class="net">
+                    <span class="material-icons-sharp">router</span>
+                    <h3>Sensors and Actuators</h3> <!-- Corrected typo: "accutators" to "Actuators" -->
+                    <h2>25/27</h2>
+                    <div class="progress">
+                        <svg><circle cx="38" cy="38" r="36"></circle></svg>
+                        <div class="number"><p>92%</p></div>
+                    </div>
+                    <small class="text-muted">Last 24 Hours</small>
+                </div>
+            </div>
+
+            <div class="timetable" id="timetable">
+                <div>
+                    <span id="prevDay"></span>
+                    <h2>Today's Timetable</h2>
+                    <span id="nextDay">></span>
+                </div>
+                <span class="closeBtn" onclick="timeTableAll()">X</span>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Time</th>
+                            <th>Room No.</th>
+                            <th>Subject</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </main>
+
+        <div class="right">
+            <div class="announcements">
+                <h2>Announcements</h2>
+                <div class="updates">
+                    <div class="message">
+                        <p><b>Academic</b> Lorem ipsum dolor sit amet consectetur adipisicing elit. Libero, tempora.</p>
+                        <small class="text-muted">2 Minutes Ago</small>
+                    </div>
+                    <div class="message">
+                        <p><b>Co-curricular</b> Lorem ipsum dolor sit amet consectetur adipisicing.</p>
+                        <small class="text-muted">10 Minutes Ago</small>
+                    </div>
+                    <div class="message">
+                        <p><b>Examination</b> Lorem ipsum dolor sit amet.</p>
+                        <small class="text-muted">Yesterday</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="leaves">
+                <h2>Teachers on Leave</h2> <!-- Capitalized for consistency -->
+                <div class="teacher">
+                    <div class="profile-photo"><img src="./images/profile-2.jpeg" alt=""></div>
+                    <div class="info">
+                        <h3>The Professor1</h3>
+                        <small class="text-muted">Full Day</small>
+                    </div>
+                </div>
+                <div class="teacher">
+                    <div class="profile-photo"><img src="./images/profile-3.jpg" alt=""></div>
+                    <div class="info">
+                        <h3>Professor 2</h3> <!-- Capitalized for consistency -->
+                        <small class="text-muted">Half Day</small>
+                    </div>
+                </div>
+                <div class="teacher">
+                    <div class="profile-photo"><img src="./images/profile-4.jpg" alt=""></div>
+                    <div class="info">
+                        <h3>Professor 3</h3> <!-- Capitalized for consistency -->
+                        <small class="text-muted">Full Day</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript for navbar and theme toggler
+        const sideMenu = document.querySelector("aside");
+        const profileBtn = document.querySelector("#profile-btn");
+        const themeToggler = document.querySelector(".theme-toggler");
+
+        if (profileBtn) {
+            profileBtn.onclick = function() {
+                sideMenu.classList.toggle('active');
+            }
+        }
+
+        window.onscroll = () => {
+            if (sideMenu) sideMenu.classList.remove('active');
+            if (window.scrollY > 0) {
+                document.querySelector('header').classList.add('active');
+            } else {
+                document.querySelector('header').classList.remove('active');
+            }
+        }
+
+        if (themeToggler) {
+            themeToggler.onclick = function() {
+                document.body.classList.toggle('dark-theme');
+                themeToggler.querySelector('span:nth-child(1)').classList.toggle('active');
+                themeToggler.querySelector('span:nth-child(2)').classList.toggle('active');
+            }
+        }
+
+        // Dropdown toggle function
+        function toggleDropdown(event) {
+            event.preventDefault();
+            const dropdown = event.currentTarget.parentElement;
+            dropdown.classList.toggle('active');
+        }
+
+        // Close dropdown if clicked outside
+        document.addEventListener('click', function(event) {
+            const dropdown = document.querySelector('.dropdown');
+            if (!dropdown.contains(event.target)) {
+                dropdown.classList.remove('active');
+            }
+        });
+    </script>
+    <script src="../public/timeTable.js"></script>
+    <script src="../public/app.js"></script>
+</body>
+</html>
