@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Business School</title>
+    <title>UMS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Sharp" rel="stylesheet">
    <style>
@@ -411,7 +411,7 @@
 </head>
 <body>
     <header>
-        <h2>U<span class="danger">M</span>S</h2>
+        <h2>U<span class="danger" color="red">M</span>S</h2>
         <nav>
             <a href="#">Academics</a>
             <a href="#">Faculty</a>
@@ -754,7 +754,7 @@
             const chatbotClose = document.getElementById('chatbot-close');
 
             chatbotIcon.addEventListener('click', () => {
-                chatbotIframe.src = 'chat_bot.html'; // Load chatbot only when clicked
+                chatbotIframe.src = 'chat_bot.ejs'; // Load chatbot only when clicked
                 chatbotModal.style.display = 'flex';
             });
 

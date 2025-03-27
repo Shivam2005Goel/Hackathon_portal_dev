@@ -22,7 +22,7 @@ mongoose
   .catch((err) => console.error("MongoDB connection error:", err));
 
 
-const port = 3000
+const port = 4000
 
 app.use(express.json());
 
